@@ -1,0 +1,8 @@
+<tr>
+    <td>{{ transaction.timestamp }}</td>
+    <td>{{ transaction.value }} {{transaction.currency}} </td>
+    <td>{{ transaction.description }}</td>
+    {% if transaction.where %}
+    <td>@ {{ transaction.where }}</td>
+    {% endif %}
+</tr>

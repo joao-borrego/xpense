@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <table class="table table-hover">
+    {% for transaction in transactions %}
+        {% include '_transaction.html' %}
+    {% endfor %}
+    </table>
+{% endblock %}

@@ -1,0 +1,15 @@
+<html>
+    <head>
+      {% if title %}
+      <title>{{ title }} - Xpense</title>
+      {% else %}
+      <title>Welcome to Xpense</title>
+      {% endif %}
+    </head>
+    <body>
+        <div>Xpense: <a href="/index">Home</a></div>
+        <hr>
+        {% block content %}
+        {% endblock %}
+    </body>
+</html>
