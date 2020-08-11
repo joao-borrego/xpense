@@ -13,3 +13,6 @@ class Config:
                               'sqlite:///' + os.path.join(basedir, 'app.db')
     # Disable signaling the application on every DB change
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+    # UI
+    TRANSACTIONS_PER_PAGE = 10

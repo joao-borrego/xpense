@@ -1,18 +1,11 @@
-from datetime import datetime, timedelta
 import unittest
 from app import app, db
-from app.models import Transaction, TransactionType, Account, Category
+from app.models import Transaction, TransactionType, Account
 
-
-DEFAULT_CATEGORIES = [
-    'Category 1'
-]
-
-
-DEFAULT_ACCOUNTS = [
-    {'name': 'Account 1', 'currency': '€', 'balance': 0.0, 'description': ''},
-    {'name': 'Account 2', 'currency': '€', 'balance': 0.0, 'description': ''},
-    {'name': 'Account 3', 'currency': 'CHF', 'balance': 0.0, 'description': ''},
+ACCOUNTS = [
+    {'name': 'Account 1', 'currency': 'EUR', 'balance': 0.0, },
+    {'name': 'Account 2', 'currency': 'EUR', 'balance': 0.0, },
+    {'name': 'Category 1', 'currency': 'EUR', 'balance': 0.0, 'is_category': True},
 ]
 
 
@@ -22,8 +15,7 @@ class TransactionModelCase(unittest.TestCase):
         # Use in-memory SQLite database
         app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite://'
         db.create_all()
-        self.create_default_categories()
-        self.create_default_accounts()
+        self.create_accounts()
 
     def tearDown(self):
         db.session.remove()
@@ -33,19 +25,20 @@ class TransactionModelCase(unittest.TestCase):
 
         a1 = Account.query.filter_by(name="Account 1").first()
         a2 = Account.query.filter_by(name="Account 2").first()
-        c1 = Category.query.first()
-        t1 = Transaction(type=TransactionType.expense, value=50.0, currency="€")
-        t2 = Transaction(type=TransactionType.transfer, value=50.0, value_alt=50.0, currency="€", currency_alt="€")
-
+        c1 = Account.query.filter_by(name="Category 1").first()
+        t1 = Transaction(type=TransactionType.expense,
+                         value_src=50.0, currency_src="EUR", value_dest=50.0, currency_dest="EUR")
+        t2 = Transaction(type=TransactionType.transfer,
+                         value_src=50.0, currency_src="EUR", value_dest=50.0, currency_dest="EUR")
         db.session.add(a1)
         db.session.add(a2)
         db.session.add(c1)
         db.session.commit()
 
-        a1.add_transaction(t1)
+        a1.add_transaction(t1, dest_account=c1)
         self.assertEqual(a1.balance, -50.0)
         self.assertIn(t1, a1.transactions_from.all())
-        a1.add_transaction(t2, to_account=a2)
+        a1.add_transaction(t2, dest_account=a2)
         self.assertEqual(a1.balance, -100.0)
         self.assertIn(t2, a1.transactions_from.all())
         self.assertEqual(a2.balance, 50.0)
@@ -61,23 +54,16 @@ class TransactionModelCase(unittest.TestCase):
 
     def test_wrong_currency(self):
         a1 = Account.query.filter_by(name="Account 1").first()
-        t1 = Transaction(type=TransactionType.expense, value=50.0, currency="CHF")
+        t1 = Transaction(type=TransactionType.expense, value_src=50.0, currency_src="CHF")
+        c1 = Account.query.filter_by(name="Category 1").first()
         db.session.add(a1)
         with self.assertRaises(RuntimeError) as _:
-            a1.add_transaction(t1)
+            a1.add_transaction(t1, dest_account=c1)
 
     @staticmethod
-    def create_default_categories():
-        for name in DEFAULT_CATEGORIES:
-            category = Category(name=name)
-            db.session.add(category)
-        db.session.commit()
-
-    @staticmethod
-    def create_default_accounts():
-        for a in DEFAULT_ACCOUNTS:
-            account = Account(name=a['name'], currency=a['currency'],
-                              balance=a['balance'], description=a['description'])
+    def create_accounts():
+        for a in ACCOUNTS:
+            account = Account(**a)
             db.session.add(account)
         db.session.commit()
 

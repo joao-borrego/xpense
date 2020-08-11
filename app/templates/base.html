@@ -1,15 +1,29 @@
-<html>
-    <head>
-      {% if title %}
-      <title>{{ title }} - Xpense</title>
-      {% else %}
-      <title>Welcome to Xpense</title>
-      {% endif %}
-    </head>
-    <body>
-        <div>Xpense: <a href="/index">Home</a></div>
-        <hr>
-        {% block content %}
-        {% endblock %}
-    </body>
-</html>
+{% extends 'bootstrap/base.html' %}
+
+{% block title %}
+    {% if title %}{{ title }} - Xpense{% else %}Welcome to Xpense{% endif %}
+{% endblock %}
+
+{% block navbar %}
+    <nav class="navbar navbar-default">
+        <a class="navbar-brand" href="/index">Xpense</a>
+    </nav>
+{% endblock %}
+
+{% block content %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <div class="container">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-info" role="alert">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        {# application content needs to be provided in the app_content block #}
+        {% block app_content %}{% endblock %}
+    </div>
+{% endblock %}
+
