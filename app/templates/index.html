@@ -2,19 +2,6 @@
 
 {% block app_content %}
 
-{% for transaction in transactions %}
-    {% include '_transaction.html' %}
-{% endfor %}
-
-<div class="row">
-    {% if next_url %}
-    <button onclick="location.href='{{ next_url }}'"><i class="fa fa-arrow-left"></i> Older</button>
-    {% endif %}
-    {% if prev_url %}
-    <button onclick="location.href='{{ prev_url }}'">Newer <i class="fa fa-arrow-right"></i></button>
-    {% endif %}
-</div>
-
-<style>
+{% include 'transactions.html' %}
 
 {% endblock %}

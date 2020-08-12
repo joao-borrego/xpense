@@ -2,13 +2,16 @@ import csv
 from datetime import datetime
 from typing import Dict, List, Tuple
 
-from app import app, db
+from app import create_app, db
 from app.models import Transaction, TransactionType, Account
 
 
 def main():
 
-    #app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite://'
+    app = create_app()
+    app_context = app.app_context()
+    app_context.push()
+
     db.drop_all()
     db.create_all()
 
@@ -25,7 +28,7 @@ def main():
     for account in Account.query.filter_by(is_category=True).order_by(Account.name.asc()):
         print(account)
 
-    #db.drop_all()
+    app_context.pop()
 
 
 def extract_where(entry) -> Tuple[str, str]:

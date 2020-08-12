@@ -1,0 +1,20 @@
+<div class="row">
+    <div class="col-xs-2">
+        <img src="{{ account.get_icon() }}" style="border-radius: 50%">
+    </div>
+    <div class="col-xs-4">
+        <div class="row">
+            {{ account.name }}
+        </div>
+        {% if not account.is_category %}
+        <div class="row">
+            {{ "%.2f"|format(account.balance) }} {{ account.currency }}
+        </div>
+        {% endif %}
+    </div>
+    <div class="col-xs-4">
+        <div class="row">
+            {{ account.description or "[No Description]"}}
+        </div>
+    </div>
+</div>

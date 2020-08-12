@@ -1,7 +1,6 @@
 import enum
 from datetime import datetime
 from hashlib import md5
-
 from app import db
 
 

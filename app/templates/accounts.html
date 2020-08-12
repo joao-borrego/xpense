@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <h2>Accounts</h2>
+            {% for account in accounts %}
+                {% include '_account.html' %}
+            {% endfor %}
+        </div>
+        <div class="col-md-6">
+            <h2>Expense Categories</h2>
+            {% for account in categories %}
+                {% include '_account.html' %}
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,6 +1,7 @@
 import unittest
-from app import app, db
+from app import create_app, db
 from app.models import Transaction, TransactionType, Account
+from config import Config
 
 ACCOUNTS = [
     {'name': 'Account 1', 'currency': 'EUR', 'balance': 0.0, },
@@ -9,17 +10,25 @@ ACCOUNTS = [
 ]
 
 
+class TestConfig(Config):
+    TESTING = True
+    # Use in-memory SQLite database
+    SQLALCHEMY_DATABASE_URI = 'sqlite://'
+
+
 class TransactionModelCase(unittest.TestCase):
 
     def setUp(self):
-        # Use in-memory SQLite database
-        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite://'
+        self.app = create_app(TestConfig)
+        self.app_context = self.app.app_context()
+        self.app_context.push()
         db.create_all()
         self.create_accounts()
 
     def tearDown(self):
         db.session.remove()
         db.drop_all()
+        self.app_context.pop()
 
     def test_add_remove_transactions(self):
 
