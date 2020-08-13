@@ -1,0 +1,13 @@
+Type;Time;Source;Destination;Currency;Amount;Comment;Source category currency;Source value;Destination category currency;Destination value
+Income;01/06/2020 18:25:06;;Swiss Account;CHF;300.00;Initial balance;;;;;
+Income;01/06/2020 18:22:55;;PT Account;EUR;100.00;Initial balance;;;;;
+Income;01/06/2020 18:22:55;;FR Account;EUR;200.00;Initial balance;;;;;
+Income;01/08/2020 18:25:06;;USA Account;USD;200.00;Initial balance;;;;;
+Expenses;01/08/2020 18:36:28;PT Account;Bar&Pub;EUR;5.00;10 Beers @ Arco do Cego;;;;;
+Expenses;01/08/2020 20:40:28;PT Account;Meal;EUR;5.50;Francesinha @ Rialva;;;;;
+Expenses;04/08/2020 07:40:00;Swiss Account;Bar&Pub;CHF;9.0;Morning Coffee @ That coffee place that plays Jazz;CHF;9.0;EUR;8.35;
+Transfer;23/08/2020 12:50:54;FR Account;EUR Account;EUR;50;Transfer with same currency;EUR;50;;;
+Transfer;24/08/2020 07:50:54;USA Account;EUR Account;EUR;50;Transfer with currency exchange;USD;59.17;;;
+Expenses;25/09/2020 20:30:55;Swiss Account;Car Fuel;CHF;30.0;Fuel @ Migrolino
+Expenses;26/09/2020 20:30:55;FR Account;Groceries;EUR;50.0;Groceries @ E.Leclerc
+

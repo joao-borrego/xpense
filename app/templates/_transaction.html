@@ -4,57 +4,69 @@ Arguments
 #}
 
 <div class="row" id="transaction-list-item">
-    <div class="col-sm-2 actions">
-        <button class="action-btn"><i class="fa fa-edit fa-fw"></i></button>
-        <br>
-        <button class="action-btn"><i class="fa fa-trash fa-fw"></i></button>
-    </div>
-    <div class="col-sm-10 transaction">
-        <div class="row">
-            <div class="col-sm-4 src_account">
+    <div class="col-xs-11 transaction">
+        <div class="row form-group">
+            <div class="col-xs-4 src_account">
                 {% with account=transaction.src_account %}
-                <div class="col-sm-6 account-icon">
+                <div class="col-xs-6 account-icon">
                     {% if account %}
                     <img src="{{ account.get_icon() }}" style="border-radius: 50%">
                     {% else %}
-                    [No Icon]
+                    <img src="https://www.gravatar.com/avatar/34ae6773410925b4574e656be194f0ad?d=identicon&s=50"
+                         style="border-radius: 50%">
                     {% endif %}
                 </div>
-                <div class="col-sm-6 account-name">
+                <div class="col-xs-6 account-name">
                     <div class="row">
-                        {% if account %} {{ account.name }}
-                        {% else %} Income
+                        {% if account %}
+                        <a href="{{ url_for('main.view_account', id=account.id) }}">{{ account.name }}</a>
+                        {% else %}
+                        Income
                         {% endif %}
                     </div>
                     <div class="row">
-                        {% if transaction.currency_src != transaction.currency_dest %}
-                            {{ transaction.value_src }} {{ transaction.currency_src }}
+                        {% if transaction.value_src != transaction.value_dest %}
+                            {{ "%.2f"|format(transaction.value_src) }} {{ transaction.currency_src }}
                         {% endif %}
                     </div>
                 </div>
                 {% endwith %}
             </div>
-            <div class="col-sm-4 details">
+            <div class="col-xs-4 details">
                 {{ transaction.description }}
                 {% if transaction.where %} @ {{ transaction.where }} {% endif %}
                 <br>
                 {{ transaction.datetime.strftime('%Y-%m-%d %H:%M') }}
             </div>
-            <div class="col-sm-4 dest_account">
+            <div class="col-xs-4 dest_account">
                 {% with account=transaction.dest_account %}
-                <div class="col-sm-6 account-name">
+                <div class="col-xs-6 account-name">
                     <div class="row">
-                        {{ account.name }}
+                        <a href="{{ url_for('main.view_account', id=account.id) }}">{{ account.name }}</a>
                     </div>
                     <div class="row">
-                        {{ transaction.value_dest }} {{ transaction.currency_dest }}
+                        {{ "%.2f"|format(transaction.value_dest) }} {{ transaction.currency_dest }}
                     </div>
                 </div>
-                <div class="col-sm-6 account-icon">
+                <div class="col-xs-6 account-icon">
                     <img src="{{ account.get_icon() }}" style="border-radius: 50%">
                 </div>
                 {% endwith %}
             </div>
         </div>
     </div>
+    {% if form %}
+    <div class="col-xs-1 actions">
+        <div class="row">
+            <form action="{{ url_for('main.edit_transaction', id=transaction.id) }}" method="post">
+                {{ form.hidden_tag() }}
+                <button type="submit" class="btn btn-sm btn-default"><i class="fa fa-edit fa-fw"></i></button>
+            </form>
+            <form action="{{ url_for('main.remove_transaction', id=transaction.id) }}" method="post">
+                {{ form.hidden_tag() }}
+                <button type="submit" class="btn btn-sm btn-default"><i class="fa fa-trash fa-fw"></i></button>
+            </form>
+        </div>
+    </div>
+    {% endif %}
 </div>

@@ -1,0 +1,11 @@
+/*
+ * Coloured labels for account balance
+ */
+
+.pos-value {
+    color: red;
+}
+
+.neg-value {
+    color: green;
+}

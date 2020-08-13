@@ -1,5 +1,5 @@
 import enum
-from datetime import datetime
+from datetime import datetime, date, timedelta
 from hashlib import md5
 from app import db
 
@@ -100,6 +100,7 @@ class Account(db.Model):
             dest_account.balance += transaction.value_dest
             dest_account.transactions_to.append(transaction)
             self.transactions_from.append(transaction)
+        db.session.add(transaction)
         db.session.commit()
 
     def remove_transaction(self, transaction: Transaction):
@@ -119,11 +120,33 @@ class Account(db.Model):
             dest_account.balance -= transaction.value_dest
             dest_account.transactions_to.remove(transaction)
             self.transactions_from.remove(transaction)
+        db.session.delete(transaction)
         db.session.commit()
 
-    def get_icon(self, size: int = 50):
+    def transactions_cur_month(self):
+        today = date.today()
+        first = today.replace(day=1)
+        last_month = first - timedelta(days=1)
+        transactions_to = self.transactions_to.filter(Transaction.datetime >= last_month)
+        transactions_from = self.transactions_from.filter(Transaction.datetime >= last_month)
+        return transactions_to.union(transactions_from).order_by(Transaction.datetime.desc()).all()
+
+    def sum_cur_month(self):
+        today = date.today()
+        first = today.replace(day=1)
+        last_month = first - timedelta(days=1)
+        transactions_to = self.transactions_to.filter(Transaction.datetime >= last_month).all()
+        transactions_from = self.transactions_from.filter(Transaction.datetime >= last_month).all()
+        sum_cur_month = sum([t.value_dest for t in transactions_to])
+        sum_cur_month += sum([-t.value_src for t in transactions_from])
+        return sum_cur_month
+
+    def generate_icon(self, size: int = 50):
+        digest = md5(self.name.lower().encode('utf-8')).hexdigest()
+        self.icon = f'https://www.gravatar.com/avatar/{digest}?d=identicon&s={size}'
+        db.session.commit()
+
+    def get_icon(self):
         if not self.icon:
-            digest = md5(self.name.lower().encode('utf-8')).hexdigest()
-            self.icon = f'https://www.gravatar.com/avatar/{digest}?d=identicon&s={size}'
-            db.session.commit()
+            self.generate_icon()
         return self.icon

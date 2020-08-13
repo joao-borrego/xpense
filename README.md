@@ -1,6 +1,9 @@
 # xpense
 Expense tracker
 
+![Screenshot](.img/index.png)
+
+
 Personal project for learning [flask].
 Most of the structure is heavily based on [The Flask Mega-Tutorial]
 
@@ -13,13 +16,12 @@ python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-Upgrade database and run server
+Upgrade database, import some transactions from example and run server
 ```bash
 flask db upgrade
+python import.py
 flask run
 ```
-
-All that's left now is to import some transactions, but everything's already set up!
 
 
 [flask]: https://flask.palletsprojects.com/en/1.1.x/

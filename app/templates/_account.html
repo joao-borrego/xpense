@@ -1,18 +1,24 @@
-<div class="row">
+<!-- TODO CSS Class instead of hacky form-group -->
+<div class="row form-group">
     <div class="col-xs-2">
         <img src="{{ account.get_icon() }}" style="border-radius: 50%">
     </div>
     <div class="col-xs-4">
         <div class="row">
-            {{ account.name }}
+            <a href="{{ url_for('main.view_account', id=account.id) }}">{{ account.name }}</a>
         </div>
-        {% if not account.is_category %}
         <div class="row">
+            {% if not account.is_category %}
             {{ "%.2f"|format(account.balance) }} {{ account.currency }}
+            {% endif %}
+            {% set sum = account.sum_cur_month() %}
+            {% set sum = sum if account.is_category else -sum %}
+            <p class="{{ 'pos' if sum > 0 else 'neg' }}-value">
+            {{ "%.2f"|format(sum) }} {{ account.currency }} spent this month
+            </p>
         </div>
-        {% endif %}
     </div>
-    <div class="col-xs-4">
+    <div class="col-xs-6">
         <div class="row">
             {{ account.description or "[No Description]"}}
         </div>

@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            {% if account.is_category %}
+            <h2>Expense category</h2>
+            {% else %}
+            <h2>Account</h2>
+            {% endif %}
+            {% include '_account.html' %}
+        </div>
+    </div>
+    <h2>Transactions this month</h2>
+    {% for transaction in transactions %}
+        {% include '_transaction.html' %}
+    {% endfor %}
+</div>
+{% endblock %}

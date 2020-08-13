@@ -1,6 +1,8 @@
 import csv
 from datetime import datetime
 from typing import Dict, List, Tuple
+import os
+dir_path = os.path.dirname(os.path.realpath(__file__))
 
 from app import create_app, db
 from app.models import Transaction, TransactionType, Account
@@ -15,7 +17,8 @@ def main():
     db.drop_all()
     db.create_all()
 
-    csv_file = '/home/borrego/Downloads/avz_export.csv'
+    # csv_file = "/home/borrego/Downloads/avz_export.csv"
+    csv_file = os.path.join(dir_path, "data", "sample_import.csv")
     dict_list = to_dict(csv_file)
     for entry in dict_list:
         create_transaction(entry)
@@ -46,6 +49,7 @@ def get_account(name: str, currency: str, is_category=False):
     account = Account.query.filter_by(name=name, currency=currency).first()
     if account is None:
         account = Account(name=name, currency=currency, balance=0.0, is_category=is_category)
+        account.generate_icon()
         db.session.add(account)
         db.session.commit()
         print(f"Added {account}")
