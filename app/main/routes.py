@@ -1,10 +1,10 @@
 from typing import List
 
-from flask import render_template, request, url_for, current_app, redirect
+from flask import g, render_template, request, url_for, current_app, redirect
 
 from app import db
 from app.main import bp
-from app.main.forms import AddExpenseForm, AddTransferForm, AddIncomeForm, EmptyForm
+from app.main.forms import AddExpenseForm, AddTransferForm, AddIncomeForm, EmptyForm, SearchForm
 from app.models import Account, Transaction, TransactionType
 
 
@@ -14,6 +14,10 @@ def get_all_accounts() -> List[Account]:
 
 def get_all_categories() -> List[Account]:
     return Account.query.filter_by(is_category=True).order_by(Account.name.asc())
+
+@bp.before_app_request
+def before_request():
+    g.search_form = SearchForm()
 
 
 @bp.route('/')
@@ -43,6 +47,21 @@ def view_account(id):
     account = Account.query.filter_by(id=id).first()
     transactions = account.transactions_cur_month()
     return render_template('account.html', title='Account', account=account, transactions=transactions)
+
+
+@bp.route('/search')
+def search():
+    form = EmptyForm()
+    if not g.search_form.validate():
+        return redirect(url_for('main.index'))
+    page = request.args.get('page', 1, type=int)
+    transactions, total = Transaction.search(g.search_form.q.data, page, current_app.config['TRANSACTIONS_PER_PAGE'])
+    next_url = url_for('main.search', q=g.search_form.q.data, page=page + 1) \
+        if total > page * current_app.config['TRANSACTIONS_PER_PAGE'] else None
+    prev_url = url_for('main.search', q=g.search_form.q.data, page=page - 1) \
+        if page > 1 else None
+    return render_template('index.html', title='Search', transactions=transactions,
+                           next_url=next_url, prev_url=prev_url, form=form)
 
 
 @bp.route('/add/expense', methods=['GET', 'POST'])
@@ -118,8 +137,8 @@ def add_income():
     return render_template('add_income.html', title='Add expense', form=form)
 
 
-@bp.route('/transaction/remove/<id>', methods=['POST'])
-def remove_transaction(id):
+@bp.route('/transaction/remove/<int:id>', methods=['POST'])
+def remove_transaction(id: int):
     form = EmptyForm()
     if form.validate_on_submit():
         transaction = Transaction.query.filter_by(id=id).first()
@@ -133,7 +152,7 @@ def remove_transaction(id):
     return redirect(url_for('main.index'))
 
 
-@bp.route('/transaction/edit/<id>', methods=['POST'])
+@bp.route('/transaction/edit/<int:id>', methods=['POST'])
 def edit_transaction(id):
     return redirect(url_for('main.index'))
 

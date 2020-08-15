@@ -3,6 +3,7 @@ from config import Config
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_bootstrap import Bootstrap
+from elasticsearch import Elasticsearch
 
 
 db = SQLAlchemy()
@@ -17,6 +18,7 @@ def create_app(config_class=Config):
     db.init_app(app)
     migrate.init_app(app, db)
     bootstrap.init_app(app)
+    app.elasticsearch = Elasticsearch(app.config.get('ELASTICSEARCH_URL'))
 
     from app.errors import bp as errors_bp
     app.register_blueprint(errors_bp)

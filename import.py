@@ -16,6 +16,7 @@ def main():
 
     db.drop_all()
     db.create_all()
+    app.elasticsearch.indices.delete(Transaction.__tablename__)
 
     # csv_file = "/home/borrego/Downloads/avz_export.csv"
     csv_file = os.path.join(dir_path, "data", "sample_import.csv")

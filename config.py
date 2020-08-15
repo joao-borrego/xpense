@@ -9,10 +9,12 @@ class Config:
     # SQLAlchemy config
 
     # Path to database
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
-                              'sqlite:///' + os.path.join(basedir, 'app.db')
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///' + os.path.join(basedir, 'app.db')
     # Disable signaling the application on every DB change
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+    # ElasticSearch
+    ELASTICSEARCH_URL = os.environ.get('ELASTICSEARCH_URL')
 
     # UI
     TRANSACTIONS_PER_PAGE = 10
