@@ -1,3 +1,9 @@
+{#
+Variables:
+    title str (optional) Web page title
+    g.form SearchForm (optional) Form for searching transactions
+#}
+
 {% extends 'bootstrap/base.html' %}
 
 {% block title %}
@@ -20,12 +26,14 @@
                 </ul>
             </li>
         </ul>
-        <form class="navbar-form navbar-right">
+        {% if g.search_form %}
+        <form class="navbar-form navbar-left" method="get"
+                action="{{ url_for('main.search') }}">
             <div class="form-group">
-                <input type="text" class="form-control" placeholder="Search transaction">
+                {{ g.search_form.q(size=20, class='form-control', placeholder='Search transaction') }}
             </div>
-            <button type="submit" class="btn btn-default">Submit</button>
         </form>
+        {% endif %}
      </div>
 </nav>
 {% endblock %}
