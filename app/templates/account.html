@@ -1,3 +1,9 @@
+{#
+Variables:
+    account Account Target account to view
+    transactions List[Transaction] Transactions associated with target account in current month
+#}
+
 {% extends "base.html" %}
 
 {% block app_content %}
@@ -12,9 +18,11 @@
             {% include '_account.html' %}
         </div>
     </div>
+    {# TODO Add edit account button #}
     <h2>Transactions this month</h2>
     {% for transaction in transactions %}
         {% include '_transaction.html' %}
     {% endfor %}
+    {# TODO Add button with see all transactions #}
 </div>
 {% endblock %}
